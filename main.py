@@ -1,4 +1,5 @@
 import os
+import time
 from fastapi import FastAPI
 from googleapiclient.discovery import build
 
@@ -10,13 +11,20 @@ google_search_service = build("customsearch", "v1", developerKey=api_key)
 
 def fetch_search_result_links(search_phrase):
     result_links = []
-    try:
-        response = google_search_service.cse().list(q=search_phrase, cx=cse_id, num=3).execute()
-        for item in response['items']:
-            result_links.append(item['link'])
-    except Exception as e:
-        print(f"Error during search: {e}")
-    
+    retries = 1
+
+    while retries >= 0:
+        try:
+            response = google_search_service.cse().list(q=search_phrase, cx=cse_id, num=3).execute()
+            for item in response['items']:
+                result_links.append(item['link'])
+            break
+        except Exception as e:
+            print(f"Error during search: {e}")
+            retries -= 1
+            if retries >= 0:
+                time.sleep(1)
+
     return result_links
 
 @app.get("/google/{phrase}")
