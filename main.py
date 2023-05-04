@@ -2,6 +2,7 @@ import os
 import time
 from fastapi import FastAPI
 from googleapiclient.discovery import build
+import logging
 
 app = FastAPI()
 
@@ -33,6 +34,6 @@ async def google(phrase: str):
 
 @app.on_event("startup")
 async def on_startup():
-    print("Application startup complete.")
-    print("Example API request with curl:")
-    print("curl http://localhost:3100/google/your_search_phrase")
+    logging.info("Application startup complete.")
+    logging.info("Example API request with curl:")
+    logging.info("curl http://localhost:3100/google/your_search_phrase")
