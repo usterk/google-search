@@ -1,26 +1,24 @@
 import os
-from dotenv import load_dotenv
 from fastapi import FastAPI
 from googleapiclient.discovery import build
 
-load_dotenv()  # Load the environment variables from the .env file
-
 app = FastAPI()
 
-api_key = os.getenv("GOOGLE_SEARCH_API")
+api_key = os.environ["GOOGLE_SEARCH_API"]
+cse_id = os.environ["GOOGLE_CSE_ID"]
 google_search_service = build("customsearch", "v1", developerKey=api_key)
 
-def pobierz_linki_wynikow(fraza_wyszukiwania):
-    linki_wynikow = []
+def fetch_search_result_links(search_phrase):
+    result_links = []
     try:
-        response = google_search_service.cse().list(q=fraza_wyszukiwania, cx="017576662512468239146:omuauf_lfve", num=3).execute()
+        response = google_search_service.cse().list(q=search_phrase, cx=cse_id, num=3).execute()
         for item in response['items']:
-            linki_wynikow.append(item['link'])
+            result_links.append(item['link'])
     except Exception as e:
-        print(f"Błąd podczas wyszukiwania: {e}")
+        print(f"Error during search: {e}")
     
-    return linki_wynikow
+    return result_links
 
-@app.get("/google/{fraza}")
-async def google(fraza: str):
-    return {"wyniki": pobierz_linki_wynikow(fraza)}
+@app.get("/google/{phrase}")
+async def google(phrase: str):
+    return {"results": fetch_search_result_links(phrase)}
