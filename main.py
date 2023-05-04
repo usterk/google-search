@@ -22,3 +22,9 @@ def fetch_search_result_links(search_phrase):
 @app.get("/google/{phrase}")
 async def google(phrase: str):
     return {"results": fetch_search_result_links(phrase)}
+
+@app.on_event("startup")
+async def on_startup():
+    print("Application startup complete.")
+    print("Example API request with curl:")
+    print("curl http://localhost:3100/google/your_search_phrase")
