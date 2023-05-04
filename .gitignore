@@ -1,0 +1,21 @@
+# Ignore .env file
+.env
+
+# Ignore Python cache files and directories
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environments
+venv/
+myenv/
+*.venv
+.env/
+
+# Ignore common IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
